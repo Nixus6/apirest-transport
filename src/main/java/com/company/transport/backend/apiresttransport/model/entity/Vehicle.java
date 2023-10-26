@@ -45,7 +45,7 @@ public class Vehicle implements Serializable {
 	@Column(name = "capacidad")
 	private String capacidad;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "conductor_id", nullable = false)
+	@JoinColumn(name = "conductor_id", nullable = true)
 	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
-	Driver driver;
+	private Driver driver;
 }
