@@ -1,6 +1,5 @@
 package com.company.transport.backend.apiresttransport.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,21 +14,29 @@ import com.company.transport.backend.apiresttransport.model.entity.Driver;
 import com.company.transport.backend.apiresttransport.model.payload.MessageResponse;
 import com.company.transport.backend.apiresttransport.service.IDriver;
 
+
 @RestController
 @RequestMapping("/api/v1")
 public class DriverController {
-	
-	@Autowired
-	private IDriver driverService;
-	
-	@PostMapping("driver")
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<?> create(@RequestBody DriverDto driverDto) {
-		Driver driverSave = null;
-		try {
-			driverSave = driverService.save(driverDto);		
-			
-			driverDto = DriverDto.builder()
+
+    private final IDriver driverService;
+
+    public DriverController(IDriver driverService) {
+        this.driverService = driverService;
+    }
+
+    /**
+     * Maneja la creación de un nuevo conductor.
+     *
+     * @param driverDto Los datos del conductor a crear.
+     * @return ResponseEntity con un mensaje de éxito y el conductor creado, o un mensaje de error.
+     */
+    @PostMapping("drivers")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<MessageResponse<DriverDto>> create(@RequestBody DriverDto driverDto) {
+        try {
+            Driver driverSave = driverService.save(driverDto);
+			DriverDto driverSaveDto = DriverDto.builder()
 					.id(driverSave.getId())
 					.identificacion(driverSave.getIdentificacion())
 					.nombre(driverSave.getNombre())
@@ -37,18 +44,28 @@ public class DriverController {
 					.telefono(driverSave.getTelefono())
 					.direccion(driverSave.getDireccion())
 					.build();
-			
-			return new ResponseEntity<>(MessageResponse.builder()
-					.message("Guardado Correctamente")
-					.object(driverDto)
-					,HttpStatus.CREATED);
-		} catch (DataAccessException e) {
-			// TODO: handle exception
-			return new ResponseEntity<>(MessageResponse.builder()
-					.message(e.getMessage())
-					.object(null)
-					,HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-	
+            MessageResponse<DriverDto> response = MessageResponse.<DriverDto>builder()
+                    .message("Guardado Correctamente")
+                    .object(driverSaveDto)
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
+        } 
+		/*
+		 * catch (DriverAlreadyExistsException e) { // Maneja una excepción
+		 * personalizada que ocurre si el conductor ya existe.
+		 * MessageResponse<DriverDto> response = MessageResponse.<DriverDto>builder()
+		 * .message(e.getMessage()) .object(null) .build(); return new
+		 * ResponseEntity<>(response, HttpStatus.CONFLICT); }
+		 */
+        catch (DataAccessException e) {
+            // Maneja una excepción de acceso a datos que puede ocurrir al interactuar con la base de datos.
+            MessageResponse<DriverDto> response = MessageResponse.<DriverDto>builder()
+                    .message(e.getMessage())
+                    .object(null)
+                    .build();
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

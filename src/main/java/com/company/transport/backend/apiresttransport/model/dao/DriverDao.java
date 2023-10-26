@@ -6,4 +6,6 @@ import com.company.transport.backend.apiresttransport.model.entity.Driver;
 
 public interface DriverDao extends CrudRepository<Driver, Integer>{
 
+	
+	
 }

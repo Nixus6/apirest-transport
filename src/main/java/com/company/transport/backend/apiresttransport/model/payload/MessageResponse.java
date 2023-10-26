@@ -1,7 +1,5 @@
 package com.company.transport.backend.apiresttransport.model.payload;
 
-import java.io.Serializable;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -9,7 +7,7 @@ import lombok.ToString;
 @Data
 @ToString
 @Builder
-public class MessageResponse implements Serializable{
+public class MessageResponse <T>{
 	private String message;
-	private Object object;
+	private T object;
 }
