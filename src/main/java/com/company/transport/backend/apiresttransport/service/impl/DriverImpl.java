@@ -1,12 +1,12 @@
 package com.company.transport.backend.apiresttransport.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.company.transport.backend.apiresttransport.exception.DriverNotFoundException;
 import com.company.transport.backend.apiresttransport.model.dao.DriverDao;
 import com.company.transport.backend.apiresttransport.model.dao.VehicleDao;
 import com.company.transport.backend.apiresttransport.model.dto.DriverDto;
@@ -23,7 +23,7 @@ import jakarta.transaction.Transactional;
  */
 @Service
 public class DriverImpl implements IDriver {
-
+	private static final Logger log=LoggerFactory.getLogger(DriverImpl.class);
 	@Autowired
 	private DriverDao driverDao;
 	@Autowired
@@ -60,21 +60,37 @@ public class DriverImpl implements IDriver {
 	 */
 	@Transactional
 	@Override
-	public List<Vehicle> getUnassignedVehicles(DriverDto driverDto) {
+	public List<Vehicle> getUnassignedVehicles(Driver driver) {
 		// Obtiene todos los vehículos disponibles en la base de datos.
 		List<Vehicle> allVehicles = vehicleDao.findAll();
+
 		// Obtiene la lista de vehículos asignados al conductor desde el objeto
 		// DriverDto.
-		List<Vehicle> assignedVehicles = driverDto.getVehicles();
-		System.out.print(assignedVehicles);
+		List<Vehicle> assignedVehicles = driver.getVehicles();
+		System.out.println("Tamaño de allVehicles: " + allVehicles.size());
+		System.out.println("Tamaño de assignedVehicles: " + assignedVehicles.size());
 		// Filtra los vehículos y devuelve la lista de vehiculos no asignados al
 		// conductor.
-		return assignedVehicles == null ? allVehicles:allVehicles.stream().filter(vehicle -> !assignedVehicles.contains(vehicle)).collect(Collectors.toList());
+		return  allVehicles.stream().filter(vehicle -> !assignedVehicles.contains(vehicle)).collect(Collectors.toList());
 	}
 	
 	@Transactional
 	@Override
-	public DriverDto getDriverById(Integer driverId) {
+	public List<Vehicle> getAssignedVehicles(Integer driverId) {
+		// Obtiene todos los vehículos disponibles en la base de datos.
+		Driver driver = driverDao.findById(driverId).orElse(null);
+
+		// Obtiene la lista de vehículos asignados al conductor desde el objeto
+		// DriverDto.
+		List<Vehicle> assignedVehicles = driver.getVehicles();
+		// Filtra los vehículos y devuelve la lista de vehiculos no asignados al
+		// conductor.
+		return  assignedVehicles;
+	}
+	
+	@Transactional
+	@Override
+	public Driver getDriverById(Integer driverId) {
 		// Aquí implementa la lógica para buscar un conductor por su ID.
 		// Puede utilizar el repositorio (DriverDao) o cualquier otro método de acceso a
 		// datos.
@@ -83,10 +99,7 @@ public class DriverImpl implements IDriver {
 		Driver driver = driverDao.findById(driverId).orElse(null);
 
 		if (driver != null) {
-			// Convierte el objeto Driver a un objeto DriverDto si es necesario.
-			return DriverDto.builder().id(driver.getId()).identificacion(driver.getIdentificacion())
-					.nombre(driver.getNombre()).apellido(driver.getApellido()).telefono(driver.getTelefono())
-					.direccion(driver.getDireccion()).build();
+			return driver;
 		}
 
 		return null; // Devuelve null si no se encuentra el conductor.

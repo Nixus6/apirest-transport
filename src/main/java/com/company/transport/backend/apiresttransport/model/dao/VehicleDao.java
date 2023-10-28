@@ -1,7 +1,10 @@
 package com.company.transport.backend.apiresttransport.model.dao;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.company.transport.backend.apiresttransport.model.dto.VehicleDto;
 import com.company.transport.backend.apiresttransport.model.entity.Vehicle;
 
 /**
@@ -9,7 +12,6 @@ import com.company.transport.backend.apiresttransport.model.entity.Vehicle;
  * Extiende JpaRepository para aprovechar las operaciones CRUD proporcionadas por Spring Data JPA.
  */
 public interface VehicleDao extends JpaRepository<Vehicle, Integer> {
-	
 	
 	
 }

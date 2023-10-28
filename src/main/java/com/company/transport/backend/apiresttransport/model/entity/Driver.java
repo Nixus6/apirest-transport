@@ -21,7 +21,6 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Builder
 @Table(name = "conductores")
@@ -46,6 +45,8 @@ public class Driver implements Serializable {
 	private String telefono;
 	@Column(name = "direccion")
 	private String direccion;
-    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "driver")
     private List<Vehicle> vehicles;
+    
+
 }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.company.transport.backend.apiresttransport.model.dto.DriverDto;
+import com.company.transport.backend.apiresttransport.model.entity.Driver;
 import com.company.transport.backend.apiresttransport.model.entity.Vehicle;
 import com.company.transport.backend.apiresttransport.model.payload.MessageResponse;
 import com.company.transport.backend.apiresttransport.service.IDriver;
@@ -39,7 +40,7 @@ public class DriverRestControllerTest {
     public void testGetUnassignedVehicles() {
         // Arrange
         Integer driverId = 1;
-        DriverDto mockDriverDto = new DriverDto();
+        Driver mockDriverDto = new Driver();
         mockDriverDto.setId(driverId);
 
         // Mock the behavior of driverService
@@ -81,7 +82,7 @@ public class DriverRestControllerTest {
     public void testGetUnassignedVehiclesDataAccessException() {
         // Arrange
         Integer driverId = 1;
-        DriverDto mockDriverDto = new DriverDto();
+        Driver mockDriverDto = new Driver();
         mockDriverDto.setId(driverId);
 
         // Mock the behavior of driverService to throw a DataAccessException

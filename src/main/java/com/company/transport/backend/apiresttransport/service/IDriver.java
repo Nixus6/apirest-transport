@@ -9,6 +9,7 @@ import com.company.transport.backend.apiresttransport.model.entity.Vehicle;
 public interface IDriver {
 	
 	Driver save(DriverDto driver);	
-	List<Vehicle> getUnassignedVehicles(DriverDto driver);
-	DriverDto getDriverById(Integer driverId);
+	List<Vehicle> getUnassignedVehicles(Driver driver);
+	List<Vehicle> getAssignedVehicles(Integer driverId);
+	Driver getDriverById(Integer driverId);
 }

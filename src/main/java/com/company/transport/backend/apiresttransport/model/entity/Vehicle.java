@@ -23,7 +23,6 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Builder
 @Table(name = "vehiculo")
@@ -48,4 +47,6 @@ public class Vehicle implements Serializable {
 	@JoinColumn(name = "conductor_id", nullable = true)
 	@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 	private Driver driver;
+	
+
 }

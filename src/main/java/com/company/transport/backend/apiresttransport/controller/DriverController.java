@@ -50,13 +50,6 @@ public class DriverController {
 					.object(driverSaveDto).build();
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		}
-		/*
-		 * catch (DriverAlreadyExistsException e) { // Maneja una excepción
-		 * personalizada que ocurre si el conductor ya existe.
-		 * MessageResponse<DriverDto> response = MessageResponse.<DriverDto>builder()
-		 * .message(e.getMessage()) .object(null) .build(); return new
-		 * ResponseEntity<>(response, HttpStatus.CONFLICT); }
-		 */
 		catch (DataAccessException e) {
 			// Maneja una excepción de acceso a datos que puede ocurrir al interactuar con
 			// la base de datos.
@@ -73,19 +66,21 @@ public class DriverController {
 	 *                 no asignados.
 	 * @return ResponseEntity con la lista de vehículos no asignados.
 	 */
-	@GetMapping("drivers/{driverId}")
+	@GetMapping("drivers/UnassignedVehicles/{driverId}")
 	public ResponseEntity<MessageResponse<List<Vehicle>>> getUnassignedVehicles(@PathVariable Integer driverId) {
 		try {
 			// Obtiene el conductor a partir de su ID, por ejemplo, utilizando el servicio.
-			DriverDto driverDto = driverService.getDriverById(driverId);
+			Driver driver = driverService.getDriverById(driverId);
 
-			if (driverDto == null) {
+			if (driver == null) {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 
 			// Llama al servicio para obtener la lista de vehículos no asignados.
-			List<Vehicle> unassignedVehicles = driverService.getUnassignedVehicles(driverDto);
-			MessageResponse<List<Vehicle>> response = MessageResponse.<List<Vehicle>>builder().message("")
+			List<Vehicle> unassignedVehicles = driverService.getUnassignedVehicles(driver);
+			
+			System.out.print(unassignedVehicles);
+			MessageResponse<List<Vehicle>> response = MessageResponse.<List<Vehicle>>builder().message("en")
 					.object(unassignedVehicles).build();
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (DataAccessException e) {
@@ -98,28 +93,6 @@ public class DriverController {
 
 	}
 	
-	
-	/*
-	 * @PostMapping("drivers/assign-vehicles/{driverId}") public
-	 * ResponseEntity<MessageResponse<DriverDto>> assignVehiclesToDriver(
-	 * 
-	 * @PathVariable Integer driverId,
-	 * 
-	 * @RequestBody Set<Integer> vehicleIds ) { try { Driver driverSave =
-	 * driverService.assignVehiclesToDriver(driverId, vehicleIds); DriverDto
-	 * driverSaveDto = DriverDto.builder().id(driverSave.getId())
-	 * .identificacion(driverSave.getIdentificacion()).nombre(driverSave.getNombre()
-	 * ) .apellido(driverSave.getApellido()).telefono(driverSave.getTelefono())
-	 * .direccion(driverSave.getDireccion()).build(); MessageResponse<DriverDto>
-	 * response =
-	 * MessageResponse.<DriverDto>builder().message("Guardado Correctamente")
-	 * .object(driverSaveDto).build(); return new ResponseEntity<>(response,
-	 * HttpStatus.OK); } catch (DataAccessException e) { // Maneja una excepción de
-	 * acceso a datos que puede ocurrir al interactuar con // la base de datos.
-	 * MessageResponse<DriverDto> response =
-	 * MessageResponse.<DriverDto>builder().message(e.getMessage())
-	 * .object(null).build(); return new ResponseEntity<>(response,
-	 * HttpStatus.INTERNAL_SERVER_ERROR); } }
-	 */
+
 
 }
